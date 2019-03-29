@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/LoginProcess")
 public class LoginProcess extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private JokeDAO JokeDAO;
+	
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -26,79 +26,61 @@ public class LoginProcess extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
-    public void init() {
-    	JokeDAO = new JokeDAO();
+   
+
+    	/**
+    	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+    	 */
+    	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    		// TODO Auto-generated method stub
+    		response.getWriter().append("Served at: ").append(request.getContextPath());
+    		doPost(request,response);
+    	}
+
+    	/**
+    	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+    	 */
+    	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    		// TODO Auto-generated method stub
+    		String uname = request.getParameter("uname");
+    		String password = request.getParameter("password");
+    		  if(LoginDao.validate(uname, password)){  
+    		    System.out.println("Your are successfully logged in!!");
+    		    RequestDispatcher dispatcher = request.getRequestDispatcher("1.jsp");
+    	        dispatcher.forward(request, response);
+    		  }
+    		    else{  
+    		    	 System.out.println("Log in Failed!!"); 
+    		    } 
+    		  try {
+    			Insert(request, response);
+    		} catch (SQLException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+    		  
+    	}
     	
-    }
+    	  private void Insert(HttpServletRequest request, HttpServletResponse response)
+    	            throws SQLException, ServletException, IOException {
+    		  	String fname = request.getParameter("fname");
+    		  	String lname = request.getParameter("lname");
+    		  	String email = request.getParameter("email");
+    	        String gender = request.getParameter("gender");
+    	        int age = Integer.parseInt(request.getParameter("age"));
+    	        String username = request.getParameter("username");
+    			String pass = request.getParameter("pass");
+    			boolean status=LoginDao.insert( fname, lname, email, gender, age, username, pass); 
+    			if(status= true)  
+    			System.out.print("You are successfully registered");  
+    	        
+    	        RequestDispatcher dispatcher = request.getRequestDispatcher("Login.jsp");
+    	        dispatcher.forward(request, response);
+    	 
+    	    }
+    	
+    	  
+    
+    	  }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-		doPost(request,response);
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		String uname = request.getParameter("uname");
-		String password = request.getParameter("password");
-		  if(LoginDao.validate(uname, password)){  
-		    System.out.println("Your are successfully logged in!!");
-		    try {
-		    	System.out.println("Your are successfully logged in!!");
-				ShowJokes(request,response);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		    }  
-		    else{  
-		    	 System.out.println("Log in Failed!!"); 
-		    } 
-		  try {
-			Insert(request, response);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		  
-	}
 	
-	  private void Insert(HttpServletRequest request, HttpServletResponse response)
-	            throws SQLException, ServletException, IOException {
-		  	String fname = request.getParameter("fname");
-		  	String lname = request.getParameter("lname");
-		  	String email = request.getParameter("email");
-	        String gender = request.getParameter("gender");
-	        int age = Integer.parseInt(request.getParameter("age"));
-	        String username = request.getParameter("username");
-			String pass = request.getParameter("pass");
-			boolean status=LoginDao.insert( fname, lname, email, gender, age, username, pass); 
-			if(status= true)  
-			System.out.print("You are successfully registered");  
-	        
-	        RequestDispatcher dispatcher = request.getRequestDispatcher("Login.jsp");
-	        dispatcher.forward(request, response);
-	 
-	    }
-	  private void ShowJokes(HttpServletRequest request, HttpServletResponse response)
-	            throws SQLException, ServletException, IOException {
-		  List<Joke> listJoke;
-			try {
-				listJoke = JokeDAO.listAllJokes();
-				System.out.println(listJoke);
-				request.setAttribute("listJoke", listJoke);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	        
-		    RequestDispatcher rd = request.getRequestDispatcher("1.jsp");
-		    rd.forward(request,response);
-		  
-	  }}
