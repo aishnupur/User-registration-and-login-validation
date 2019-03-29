@@ -10,7 +10,7 @@ public class LoginDao {
 	static {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/sampledb?", "root", "Student@01");
+			con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/sampledb?", "root", "pass1234");
 		} catch (Exception e) {
 		}
 	}
